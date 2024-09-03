@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<h1>Chat</h1>
+<input type="text" id="txt" />
+<input type="button" value="send" onclick="send()" /><br />
+<ul id="list">
+    
+</ul>
+
+@section Scripts {
+    <script src="~/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script>
+        // define connection
+         name = prompt("enter your name ? ");
+         con = new signalR.HubConnectionBuilder().withUrl("/chat").build();
+        // start connection
+        con.start();
+        // define call back fun
+        con.on("NewMessage", function (n, m) {
+            $("#list").append("<li>" + n + ":" + m + "</li>");
+        });
+        // define fun to consume service
+        function send() {
+            con.invoke("sendMessage",name, $("#txt").val());
+            $("#txt").val('');
+        }
+     </script>
+}
